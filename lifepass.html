@@ -22,6 +22,17 @@
   a{color:inherit; text-decoration:none;}
   .hidden{display:none !important;}
   ::selection{background:var(--gold); color:var(--bg);}
+  :focus-visible{outline:2px solid var(--gold); outline-offset:2px; border-radius:1px;}
+
+  .tilt-card{transform-style:preserve-3d; transition:transform .12s ease-out, box-shadow .25s ease; will-change:transform;}
+  .tilt-card:hover{box-shadow:0 20px 46px rgba(0,0,0,0.38);}
+
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease;}
+  .reveal.visible{opacity:1; transform:translateY(0);}
+
+  @keyframes fadeInPage{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+  .page-anim{animation:fadeInPage .4s ease;}
+  .main-fade{animation:fadeInPage .35s ease;}
 
   /* ---------- Layout shells ---------- */
   .wrap{max-width:1120px; margin:0 auto; padding:0 32px;}
@@ -36,6 +47,10 @@
   .brand-text .name{font-family:var(--serif); font-size:19px; color:var(--ink); line-height:1;}
   .brand-text .tag{font-size:9px; letter-spacing:0.16em; color:var(--ink-faint); margin-top:3px;}
   .nav-links{display:flex; align-items:center; gap:30px;}
+  .mobile-menu-btn{display:none; background:none; border:none; color:var(--ink); font-size:20px; cursor:pointer; padding:4px 6px;}
+  .mobile-nav{display:none; flex-direction:column; background:var(--panel); border-top:1px solid var(--border); padding:8px 0 16px;}
+  .mobile-nav.open{display:flex;}
+  .mobile-nav .nav-link{padding:13px 32px; font-size:14px; border-bottom:1px solid var(--border);}
   .nav-link{font-size:14px; color:var(--ink-dim); transition:color .15s; cursor:pointer;}
   .nav-link:hover{color:var(--gold);}
   .btn{font-family:var(--sans); font-size:14px; font-weight:500; padding:10px 18px; border-radius:2px; border:1px solid transparent; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:opacity .15s, background .15s;}
@@ -43,6 +58,8 @@
   .btn-gold:hover{opacity:.88;}
   .btn-ghost{background:transparent; color:var(--ink); border-color:var(--border-light);}
   .btn-ghost:hover{border-color:var(--gold); color:var(--gold);}
+  .kbd-btn{display:flex; align-items:center; gap:8px;}
+  .kbd{font-family:monospace; font-size:10px; background:var(--panel-alt); border:1px solid var(--border); padding:1px 5px; border-radius:2px; color:var(--ink-faint);}
 
   /* ---------- Hero ---------- */
   .hero{padding:88px 0 70px;}
@@ -52,9 +69,20 @@
   .headline em{font-style:italic; color:var(--gold);}
   .sub{font-size:16px; color:var(--ink-dim); margin:22px 0 34px; max-width:460px;}
   .hero-actions{display:flex; gap:14px;}
-  #hero-stage{position:relative; height:420px; border:1px solid var(--border); background:radial-gradient(circle at 50% 40%, #1E2C46 0%, var(--panel-alt) 75%);}
+  #hero-stage{position:relative; height:420px; border:1px solid var(--border); background:radial-gradient(circle at 50% 40%, #1E2C46 0%, var(--panel-alt) 75%); cursor:grab; overflow:hidden; transition:box-shadow .25s;}
+  #hero-stage.dragging{cursor:grabbing; box-shadow:0 0 46px rgba(198,161,91,0.22) inset;}
   #hero-canvas{width:100%; height:100%; display:block;}
-  .hero-caption{position:absolute; bottom:16px; left:16px; right:16px; display:flex; justify-content:space-between; font-size:10px; letter-spacing:0.1em; color:var(--ink-faint); text-transform:uppercase;}
+  .hero-caption{position:absolute; bottom:16px; left:16px; right:16px; display:flex; justify-content:space-between; font-size:10px; letter-spacing:0.1em; color:var(--ink-faint); text-transform:uppercase; pointer-events:none;}
+  .hero-hud-top{position:absolute; top:16px; left:16px; right:16px; display:flex; justify-content:space-between; font-size:10px; letter-spacing:0.08em; color:var(--gold); font-family:monospace; text-transform:uppercase; pointer-events:none; opacity:0.85;}
+  .hero-scan{position:absolute; left:0; right:0; height:45%; pointer-events:none; background:linear-gradient(180deg, transparent 0%, rgba(198,161,91,0.07) 50%, transparent 100%); animation:scanmove 6s linear infinite;}
+  @keyframes scanmove{0%{transform:translateY(-140%);} 100%{transform:translateY(260%);}}
+  .corner{position:absolute; width:20px; height:20px; border-color:var(--gold-dim); opacity:0.7; pointer-events:none;}
+  .corner.tl{top:10px; left:10px; border-top:1px solid; border-left:1px solid;}
+  .corner.tr{top:10px; right:10px; border-top:1px solid; border-right:1px solid;}
+  .corner.bl{bottom:10px; left:10px; border-bottom:1px solid; border-left:1px solid;}
+  .corner.br{bottom:10px; right:10px; border-bottom:1px solid; border-right:1px solid;}
+  #hero-tooltip{position:absolute; top:0; left:0; transform:translate(-9999px,-9999px); background:rgba(20,29,46,0.92); border:1px solid var(--gold-dim); color:var(--gold); font-family:monospace; font-size:11px; padding:6px 10px; pointer-events:none; white-space:nowrap; transition:opacity .12s; opacity:0; z-index:5;}
+  #hero-tooltip.show{opacity:1;}
 
   /* ---------- Sections ---------- */
   section{padding:76px 0;}
@@ -62,8 +90,6 @@
   .section-head .eyebrow{margin-bottom:12px;}
   .section-head h2{font-family:var(--serif); font-size:30px; color:var(--ink); margin-bottom:10px;}
   .section-head p{color:var(--ink-dim); font-size:15px;}
-
-  .tilt-card{transform-style:preserve-3d; transition:transform .12s ease-out; will-change:transform;}
 
   .feature-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
   .feature-card{background:var(--panel); border:1px solid var(--border); padding:28px 24px;}
@@ -87,6 +113,24 @@
   .membership-cta{display:flex; justify-content:center; margin-top:26px;}
 
   footer{border-top:1px solid var(--border); padding:30px 0; font-size:13px; color:var(--ink-faint); display:flex; justify-content:space-between;}
+
+  .page-container{padding:64px 0 100px;}
+  .step-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  .step-box{background:var(--panel); border:1px solid var(--border); padding:26px 22px;}
+  .step-num{font-family:var(--serif); font-size:26px; color:var(--gold-dim); margin-bottom:12px;}
+  .step-box h3{font-family:var(--serif); font-size:16px; color:var(--ink); margin-bottom:8px;}
+  .step-box p{font-size:13px; color:var(--ink-dim);}
+
+  .faq-list{max-width:620px; margin:0 auto;}
+  .faq-list details{border-bottom:1px solid var(--border); padding:16px 2px;}
+  .faq-list summary{cursor:pointer; font-family:var(--serif); font-size:15px; color:var(--ink); list-style:none; display:flex; justify-content:space-between; align-items:center;}
+  .faq-list summary::-webkit-details-marker{display:none;}
+  .faq-list summary::after{content:'+'; color:var(--gold); font-size:18px; margin-left:12px;}
+  .faq-list details[open] summary::after{content:'−';}
+  .faq-list details p{font-size:13px; color:var(--ink-dim); margin-top:10px; max-width:520px;}
+
+  .about-stats{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:36px;}
+  .about-stats .stat .v{font-size:22px;}
 
   /* ---------- Auth modal ---------- */
   .overlay{position:fixed; inset:0; background:rgba(10,12,18,0.72); z-index:50; display:flex; align-items:center; justify-content:center; padding:20px;}
@@ -127,6 +171,45 @@
   .stat .l{font-size:11px; color:var(--ink-faint); margin-top:4px;}
 
   .devices-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:26px;}
+  .devices-toolbar{display:flex; gap:10px; margin-bottom:20px;}
+  .devices-toolbar input{flex:1; max-width:320px; background:var(--panel-alt); border:1px solid var(--border); border-radius:2px; padding:9px 12px; color:var(--ink); font-family:var(--sans); font-size:13px; outline:none;}
+  .devices-toolbar select{background:var(--panel-alt); border:1px solid var(--border); border-radius:2px; padding:9px 12px; color:var(--ink-dim); font-family:var(--sans); font-size:13px; outline:none;}
+
+  .activity-list{display:flex; flex-direction:column; gap:14px;}
+  .activity-row{display:flex; align-items:flex-start; gap:10px;}
+  .activity-dot{width:6px; height:6px; border-radius:50%; background:var(--gold); margin-top:6px; flex-shrink:0;}
+  .activity-text{font-size:13px; color:var(--ink-dim);}
+  .activity-time{font-size:11px; color:var(--ink-faint); margin-top:2px;}
+
+  .testimonial-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  .testimonial-card{background:var(--panel); border:1px solid var(--border); padding:26px 22px;}
+  .testimonial-card p{font-family:var(--serif); font-style:italic; font-size:15px; color:var(--ink); line-height:1.55; margin-bottom:16px;}
+  .testimonial-card .who{font-size:12px; color:var(--ink-faint);}
+
+  .compare-table{max-width:640px; margin:0 auto; border:1px solid var(--border);}
+  .compare-row{display:grid; grid-template-columns:2fr 1fr 1fr; padding:13px 18px; border-bottom:1px solid var(--border); font-size:13px; color:var(--ink-dim); align-items:center;}
+  .compare-row:last-child{border-bottom:none;}
+  .compare-row span:nth-child(2), .compare-row span:nth-child(3){text-align:center;}
+  .compare-head{background:var(--panel); font-family:var(--serif); color:var(--ink); font-size:14px;}
+
+  .plan-hint{background:var(--panel-alt); border:1px solid var(--border); padding:10px 14px; font-size:13px; color:var(--ink-faint); margin-bottom:20px;}
+
+  .bell-btn{position:relative; background:none; border:none; font-size:16px; cursor:pointer; padding:4px; color:var(--ink-dim); line-height:1;}
+  .notif-badge{position:absolute; top:-2px; right:-2px; background:var(--rust); color:var(--ink); font-size:9px; font-family:var(--sans); font-weight:600; border-radius:50%; width:15px; height:15px; display:flex; align-items:center; justify-content:center;}
+  .notif-panel{position:absolute; top:30px; right:0; width:260px; background:var(--panel); border:1px solid var(--border); z-index:40; padding:8px 0; box-shadow:0 12px 30px rgba(0,0,0,0.4);}
+  .notif-panel .notif-head{font-size:11px; letter-spacing:0.08em; color:var(--ink-faint); padding:6px 14px 10px; text-transform:uppercase;}
+  .notif-item{padding:9px 14px; font-size:13px; color:var(--ink-dim); cursor:pointer; display:flex; justify-content:space-between; gap:10px;}
+  .notif-item:hover{background:var(--panel-alt);}
+  .notif-empty{padding:14px; font-size:13px; color:var(--ink-faint); text-align:center;}
+
+  .cmdk-box{width:100%; max-width:480px; background:var(--panel); border:1px solid var(--border-light); box-shadow:0 24px 60px rgba(0,0,0,0.5); margin-top:12vh;}
+  .cmdk-box input{width:100%; background:transparent; border:none; border-bottom:1px solid var(--border); padding:16px 18px; color:var(--ink); font-family:var(--sans); font-size:15px; outline:none;}
+  .cmdk-results{max-height:320px; overflow-y:auto; padding:6px 0;}
+  .cmdk-item{padding:10px 18px; font-size:13px; color:var(--ink-dim); cursor:pointer; display:flex; justify-content:space-between; gap:10px;}
+  .cmdk-item .tag{font-size:10px; color:var(--ink-faint); letter-spacing:0.06em; text-transform:uppercase;}
+  .cmdk-item.active, .cmdk-item:hover{background:var(--panel-alt); color:var(--ink);}
+  .cmdk-empty{padding:20px 18px; font-size:13px; color:var(--ink-faint); text-align:center;}
+  .cmdk-footer{display:flex; gap:14px; padding:10px 18px; border-top:1px solid var(--border); font-size:10px; color:var(--ink-faint); letter-spacing:0.05em; text-transform:uppercase;}
   .device-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(250px,1fr)); gap:16px;}
   .device-card{background:var(--panel); border:1px solid var(--border); padding:20px; position:relative; overflow:hidden;}
   .device-card.lost{border-color:#5A4033;}
@@ -160,11 +243,14 @@
     .hero .wrap{grid-template-columns:1fr;}
     .feature-grid{grid-template-columns:1fr;}
     .nav-links{display:none;}
+    nav .kbd-btn, nav > .wrap > .btn-ghost:not(.kbd-btn):not(.mobile-menu-btn){display:none;}
+    .mobile-menu-btn{display:block;}
     #app-shell{flex-direction:column;}
-    aside{width:100%; flex-direction:row; align-items:center; padding:16px 20px;}
+    aside{width:100%; flex-direction:row; align-items:center; padding:16px 20px; flex-wrap:wrap;}
     .side-nav{flex-direction:row; overflow-x:auto;}
     .user-block, .logout-btn{display:none;}
     main{padding:24px;}
+    .cmdk-box{margin-top:6vh; max-width:92vw;}
   }
 </style>
 </head>
@@ -174,19 +260,32 @@
 <div id="screen-landing">
   <nav>
     <div class="wrap">
-      <div class="brand" onclick="scrollToTop()">
+      <div class="brand" onclick="showPage('home')">
         <div class="seal"><div class="seal-inner">LP</div></div>
         <div class="brand-text"><div class="name">Lifepass</div><div class="tag">EQUIPMENT REGISTRY</div></div>
       </div>
       <div class="nav-links">
-        <span class="nav-link" onclick="goTo('features')">Features</span>
-        <span class="nav-link" onclick="goTo('membership')">Membership</span>
-        <span class="nav-link" onclick="goTo('mechanic-info')">Mechanic Access</span>
+        <span class="nav-link" onclick="showPage('features')">Features</span>
+        <span class="nav-link" onclick="showPage('pricing')">Pricing</span>
+        <span class="nav-link" onclick="showPage('mechanic')">Mechanic Access</span>
+        <span class="nav-link" onclick="showPage('about')">About</span>
+        <span class="nav-link" onclick="showPage('contact')">Contact</span>
       </div>
+      <button class="btn btn-ghost kbd-btn" onclick="openCmdk()">Search <span class="kbd">⌘K</span></button>
       <button class="btn btn-ghost" onclick="openAuth('login')">Sign in</button>
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open menu">☰</button>
+    </div>
+    <div id="mobile-nav" class="mobile-nav">
+      <span class="nav-link" onclick="toggleMobileMenu(); showPage('features')">Features</span>
+      <span class="nav-link" onclick="toggleMobileMenu(); showPage('pricing')">Pricing</span>
+      <span class="nav-link" onclick="toggleMobileMenu(); showPage('mechanic')">Mechanic Access</span>
+      <span class="nav-link" onclick="toggleMobileMenu(); showPage('about')">About</span>
+      <span class="nav-link" onclick="toggleMobileMenu(); showPage('contact')">Contact</span>
+      <button class="btn btn-gold" style="margin:12px 32px 0;" onclick="toggleMobileMenu(); openAuth('login')">Sign in</button>
     </div>
   </nav>
 
+  <div id="page-home" class="page">
   <div class="hero">
     <div class="wrap">
       <div>
@@ -195,17 +294,21 @@
         <p class="sub">Register your shop's equipment with its own identity, locate it the moment it goes missing, and let mechanics reach it in seconds — without ever touching your account.</p>
         <div class="hero-actions">
           <button class="btn btn-gold" onclick="openAuth('signup')">Open a registry</button>
-          <button class="btn btn-ghost" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">See how it works</button>
+          <button class="btn btn-ghost" onclick="showPage('features')">See how it works</button>
         </div>
       </div>
       <div id="hero-stage" class="rule-box">
         <canvas id="hero-canvas"></canvas>
-        <div class="hero-caption"><span>REG. NO. 004 — LIVE</span><span>ROTATING VIEW</span></div>
+        <div class="hero-scan"></div>
+        <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+        <div class="hero-hud-top"><span id="hud-rot">AXIS·Y 0.0°</span><span id="hud-vel">DRAG TO ROTATE</span></div>
+        <div class="hero-caption"><span>REG. NO. 004 — LIVE</span><span id="hero-hint">DRAG · SCROLL · DOUBLE-CLICK TO RESET</span></div>
+        <div id="hero-tooltip"></div>
       </div>
     </div>
   </div>
 
-  <section id="features">
+  <section id="home-features">
     <div class="wrap">
       <div class="section-head">
         <div class="eyebrow">WHAT'S INSIDE</div>
@@ -213,14 +316,15 @@
         <p>Built for shops juggling equipment across bays, vans, and toolboxes.</p>
       </div>
       <div class="feature-grid">
-        <div class="feature-card tilt-card"><div class="icon">1</div><h3>Find lost devices</h3><p>Ping any registered device and get its last known spot in the shop — bay, vehicle, or shelf.</p></div>
-        <div class="feature-card tilt-card"><div class="icon">2</div><h3>Unique IDs, separate passwords</h3><p>Every device is issued its own ID and its own password, kept apart from your account credentials.</p></div>
-        <div class="feature-card tilt-card"><div class="icon">3</div><h3 id="mechanic-info">Faster mechanic access</h3><p>Hand a mechanic the device ID and password — they're in immediately, no shop login required.</p></div>
+        <div class="feature-card tilt-card reveal"><div class="icon">1</div><h3>Find lost devices</h3><p>Ping any registered device and get its last known spot in the shop — bay, vehicle, or shelf.</p></div>
+        <div class="feature-card tilt-card reveal"><div class="icon">2</div><h3>Unique IDs, separate passwords</h3><p>Every device is issued its own ID and its own password, kept apart from your account credentials.</p></div>
+        <div class="feature-card tilt-card reveal"><div class="icon">3</div><h3>Faster mechanic access</h3><p>Hand a mechanic the device ID and password — they're in immediately, no shop login required.</p></div>
       </div>
+      <div style="margin-top:26px;"><span class="nav-link" onclick="showPage('features')">See all features →</span></div>
     </div>
   </section>
 
-  <section id="membership">
+  <section id="home-membership">
     <div class="wrap">
       <div class="section-head" style="margin:0 auto 40px; text-align:center;">
         <div class="eyebrow" style="text-align:center;">MEMBERSHIP</div>
@@ -247,11 +351,167 @@
         </div>
       </div>
       <div class="membership-cta"><button class="btn btn-gold" onclick="openAuth('signup')">Join for $5/mo</button></div>
+      <div style="text-align:center; margin-top:18px;"><span class="nav-link" onclick="showPage('pricing')">See full pricing & FAQ →</span></div>
     </div>
   </section>
 
+  <section id="home-testimonials">
+    <div class="wrap">
+      <div class="section-head" style="margin:0 auto 36px; text-align:center;">
+        <div class="eyebrow" style="text-align:center;">FROM THE SHOP FLOOR</div>
+        <h2>Fictional, but true to the problem</h2>
+      </div>
+      <div class="testimonial-grid">
+        <div class="testimonial-card tilt-card reveal"><p>"Our diagnostic scanner used to vanish between bays for days. Now it's a thirty-second ping."</p><div class="who">— Shop foreman, independent garage</div></div>
+        <div class="testimonial-card tilt-card reveal"><p>"Handing a mechanic a device ID beats hunting for a shared login every single time."</p><div class="who">— Service manager, dealership</div></div>
+        <div class="testimonial-card tilt-card reveal"><p>"One registry instead of three spreadsheets. That alone was worth the five dollars."</p><div class="who">— Owner, mobile mechanic fleet</div></div>
+      </div>
+    </div>
+  </section>
+  </div>
+  <!-- /page-home -->
+
+  <!-- ============ FEATURES PAGE ============ -->
+  <div id="page-features" class="page hidden">
+    <div class="wrap page-container">
+      <div class="section-head" style="margin:0 auto 44px; text-align:center;">
+        <div class="eyebrow" style="text-align:center;">FEATURES</div>
+        <h2>Everything a shop needs to keep track</h2>
+        <p style="margin:0 auto;">From the first device you register to the mechanic who finds it in the field.</p>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card tilt-card reveal"><div class="icon">1</div><h3>Find lost devices</h3><p>Ping any registered device and get its last known spot in the shop — bay, vehicle, or shelf.</p></div>
+        <div class="feature-card tilt-card reveal"><div class="icon">2</div><h3>Unique IDs, separate passwords</h3><p>Every device is issued its own ID and its own password, kept apart from your account credentials.</p></div>
+        <div class="feature-card tilt-card reveal"><div class="icon">3</div><h3>Mechanic quick access</h3><p>Hand a mechanic the device ID and password — they're in immediately, no shop login required.</p></div>
+        <div class="feature-card tilt-card reveal"><div class="icon">4</div><h3>Full activity history</h3><p>Members can trace every ping, edit, and hand-off logged against a device over its lifetime.</p></div>
+        <div class="feature-card tilt-card reveal"><div class="icon">5</div><h3>Live status at a glance</h3><p>Your dashboard shows what's tracked, what's lost, and where your membership stands — instantly.</p></div>
+        <div class="feature-card tilt-card reveal"><div class="icon">6</div><h3>One registry, whole shop</h3><p>Every technician's equipment lives in a single place instead of scattered spreadsheets and sticky notes.</p></div>
+      </div>
+
+      <div class="section-head" style="margin:70px auto 36px; text-align:center;">
+        <div class="eyebrow" style="text-align:center;">HOW IT WORKS</div>
+        <h2>Three steps, start to finish</h2>
+      </div>
+      <div class="step-grid">
+        <div class="step-box tilt-card reveal"><div class="step-num">01</div><h3>Register a device</h3><p>Name it and set a password just for that device — Lifepass assigns a unique ID on the spot.</p></div>
+        <div class="step-box tilt-card reveal"><div class="step-num">02</div><h3>Track its whereabouts</h3><p>Ping it anytime to log a fresh last-known location somewhere in the shop.</p></div>
+        <div class="step-box tilt-card reveal"><div class="step-num">03</div><h3>Hand off instantly</h3><p>Give the ID and password to a mechanic — they're looking at the device record in seconds.</p></div>
+      </div>
+      <div style="text-align:center; margin-top:46px;"><button class="btn btn-gold" onclick="openAuth('signup')">Open a registry</button></div>
+    </div>
+  </div>
+
+  <!-- ============ PRICING PAGE ============ -->
+  <div id="page-pricing" class="page hidden">
+    <div class="wrap page-container">
+      <div class="section-head" style="margin:0 auto 40px; text-align:center;">
+        <div class="eyebrow" style="text-align:center;">PRICING</div>
+        <h2>One plan, five dollars a month</h2>
+        <p style="margin:0 auto;">No tiers to compare — every member gets the full registry.</p>
+      </div>
+      <div class="membership-wrap">
+        <div class="mcard tilt-card" id="pricing-mcard" onclick="this.classList.toggle('flipped')">
+          <div class="mcard-inner">
+            <div class="mcard-face mcard-front">
+              <div><div class="label">Lifepass Membership</div><div class="price">$5<span> / month</span></div></div>
+              <div class="hint">Tap card to see what's included →</div>
+            </div>
+            <div class="mcard-face mcard-back">
+              <div class="label">Included</div>
+              <ul>
+                <li>Unlimited tracked devices</li>
+                <li>Priority lost-device locating</li>
+                <li>Mechanic quick-access links</li>
+                <li>Full device activity history</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="membership-cta"><button class="btn btn-gold" onclick="openAuth('signup')">Join for $5/mo</button></div>
+
+      <div class="section-head" style="margin:70px auto 30px; text-align:center;">
+        <h2 style="font-size:22px;">Free vs. Member</h2>
+      </div>
+      <div class="compare-table reveal">
+        <div class="compare-row compare-head"><span></span><span>Free</span><span>Member</span></div>
+        <div class="compare-row"><span>Registered devices</span><span>Up to 2</span><span>Unlimited</span></div>
+        <div class="compare-row"><span>Find lost devices</span><span>✓</span><span>✓ priority</span></div>
+        <div class="compare-row"><span>Mechanic quick access</span><span>✓</span><span>✓</span></div>
+        <div class="compare-row"><span>Full activity history</span><span>Last 3 events</span><span>Unlimited</span></div>
+        <div class="compare-row"><span>Registry export</span><span>—</span><span>✓</span></div>
+      </div>
+
+      <div class="section-head" style="margin:70px auto 24px; text-align:center;">
+        <h2 style="font-size:22px;">Frequently asked</h2>
+      </div>
+      <div class="faq-list">
+        <details><summary>Can I track more than one device?</summary><p>Yes — membership covers unlimited devices under one registry, each with its own ID and password.</p></details>
+        <details><summary>Do mechanics need a Lifepass account?</summary><p>No. A device's ID and its own password are enough to pull up its record — nothing about your shop account is exposed.</p></details>
+        <details><summary>Can I cancel anytime?</summary><p>Yes, membership is month to month with no lock-in.</p></details>
+        <details><summary>Is my account password shared with devices?</summary><p>Never — every device you register gets a separate password from the moment it's created.</p></details>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MECHANIC ACCESS PAGE ============ -->
+  <div id="page-mechanic" class="page hidden">
+    <div class="wrap page-container">
+      <div class="section-head" style="margin:0 auto 40px; text-align:center;">
+        <div class="eyebrow" style="text-align:center;">MECHANIC ACCESS</div>
+        <h2>Try it — no account required</h2>
+        <p style="margin:0 auto;">Anyone holding a device's ID and password can look it up right here.</p>
+      </div>
+      <div class="panel-narrow" style="margin:0 auto; background:var(--panel); border:1px solid var(--border); padding:28px;">
+        <form onsubmit="return landingMechanicLookup(event)">
+          <div class="field"><label>DEVICE ID</label><input id="page-mech-id" style="font-family:monospace;" placeholder="DVC-XXXXXX"></div>
+          <div class="field"><label>DEVICE PASSWORD</label><input id="page-mech-pw" type="password" placeholder="Device-specific password"></div>
+          <button class="btn btn-gold" style="width:100%;" type="submit">Access device</button>
+        </form>
+        <div id="page-mech-result"></div>
+      </div>
+      <p style="text-align:center; font-size:12px; color:var(--ink-faint); margin-top:16px;">Don't have a device to test with yet? <span class="nav-link" onclick="openAuth('signup')">Open a registry</span> and add one.</p>
+    </div>
+  </div>
+
+  <!-- ============ ABOUT PAGE ============ -->
+  <div id="page-about" class="page hidden">
+    <div class="wrap page-container" style="max-width:720px;">
+      <div class="eyebrow">ABOUT</div>
+      <h2 style="font-family:var(--serif); font-size:28px; margin-bottom:18px;">Built for the shop floor, not the boardroom</h2>
+      <p style="color:var(--ink-dim); font-size:15px; margin-bottom:16px;">Lifepass started as a simple problem: shared equipment has a way of disappearing between bays, vans, and toolboxes, and nobody remembers which password belongs to which scanner.</p>
+      <p style="color:var(--ink-dim); font-size:15px; margin-bottom:16px;">Every device gets its own identity — a unique ID and its own password — so it can be found, and handed to a mechanic, without ever touching the shop's main account.</p>
+      <div class="about-stats">
+        <div class="stat"><div class="v">1</div><div class="l">PLAN, NO TIERS</div></div>
+        <div class="stat"><div class="v">∞</div><div class="l">DEVICES PER REGISTRY</div></div>
+        <div class="stat"><div class="v">0</div><div class="l">LOGINS NEEDED FOR MECHANICS</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CONTACT PAGE ============ -->
+  <div id="page-contact" class="page hidden">
+    <div class="wrap page-container">
+      <div class="section-head" style="margin:0 auto 36px; text-align:center;">
+        <div class="eyebrow" style="text-align:center;">CONTACT</div>
+        <h2>Get in touch</h2>
+        <p style="margin:0 auto;">Questions about a shop plan or something else — send it over.</p>
+      </div>
+      <div class="contact-form" style="background:var(--panel); border:1px solid var(--border); padding:28px;">
+        <form onsubmit="return submitContact(event)">
+          <div class="field"><label>NAME</label><input id="contact-name" placeholder="Jordan Reyes"></div>
+          <div class="field"><label>EMAIL</label><input id="contact-email" type="email" placeholder="you@shop.com"></div>
+          <div class="field"><label>MESSAGE</label>
+            <textarea id="contact-msg" rows="4" style="width:100%; background:var(--panel-alt); border:1px solid var(--border); border-radius:2px; padding:10px 12px; color:var(--ink); font-family:var(--sans); font-size:14px; outline:none; resize:vertical;" placeholder="How can we help?"></textarea>
+          </div>
+          <button class="btn btn-gold submit-btn" type="submit">Send message</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <footer>
-    <div class="wrap" style="display:flex; justify-content:space-between; width:100%;">
+    <div class="wrap" style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap; gap:12px;">
       <span>Lifepass Equipment Registry</span>
       <span>Demo product — records are stored for this conversation only</span>
     </div>
@@ -287,17 +547,24 @@
 <!-- ============ APP SHELL ============ -->
 <div id="app-shell" class="hidden">
   <aside>
-    <div class="brand">
-      <div class="seal" style="width:30px;height:30px;"><div class="seal-inner" style="width:22px;height:22px;font-size:10px;">LP</div></div>
-      <div class="brand-text"><div class="name" style="font-size:16px;">Lifepass</div></div>
+    <div class="brand" style="justify-content:space-between; width:100%;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div class="seal" style="width:30px;height:30px;"><div class="seal-inner" style="width:22px;height:22px;font-size:10px;">LP</div></div>
+        <div class="brand-text"><div class="name" style="font-size:16px;">Lifepass</div></div>
+      </div>
+      <div style="position:relative;">
+        <button class="bell-btn" onclick="toggleNotifications(event)">🔔<span id="notif-badge" class="notif-badge hidden">0</span></button>
+        <div id="notif-panel" class="notif-panel hidden"></div>
+      </div>
     </div>
     <div class="side-nav">
       <button data-tab="dashboard" onclick="setTab('dashboard')">Dashboard</button>
       <button data-tab="devices" onclick="setTab('devices')">My devices</button>
       <button data-tab="membership" onclick="setTab('membership')">Membership</button>
       <button data-tab="mechanic" onclick="setTab('mechanic')">Mechanic access</button>
+      <button onclick="openCmdk()" style="display:flex; align-items:center; gap:11px; background:none; border:none; border-left:2px solid transparent; color:var(--ink-faint); font-size:13px; font-family:var(--sans); padding:11px 12px; text-align:left; cursor:pointer; width:100%;">⌘K Quick search</button>
     </div>
-    <div class="user-block">
+    <div class="user-block" onclick="openAccountSettings()" style="cursor:pointer;">
       <div class="uname" id="side-uname"></div>
       <div class="uemail" id="side-uemail"></div>
     </div>
@@ -307,6 +574,14 @@
 </div>
 
 <div id="toast"></div>
+
+<div id="cmdk-overlay" class="overlay hidden" onclick="if(event.target===this) closeCmdk()">
+  <div class="cmdk-box">
+    <input id="cmdk-input" placeholder="Jump to a page, tab, or device…" oninput="renderCmdkResults()" onkeydown="cmdkKeydown(event)">
+    <div id="cmdk-results" class="cmdk-results"></div>
+    <div class="cmdk-footer"><span>↑↓ navigate</span><span>↵ select</span><span>esc close</span></div>
+  </div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -331,6 +606,8 @@ async function saveData(data){
 let currentUser = null;
 let currentTab = 'dashboard';
 let findingId = null;
+let deviceSearchQuery = '';
+let deviceStatusFilter = 'all';
 
 /* ========================= TOAST ========================= */
 function notify(msg, type='success'){
@@ -362,62 +639,312 @@ document.querySelectorAll('.tilt-card').forEach(el => attachTilt(el, el.classLis
   const stage = document.getElementById('hero-stage');
   const canvas = document.getElementById('hero-canvas');
   const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-  camera.position.set(0, 0, 6);
+  camera.position.set(0, 0, 6.4);
 
-  const ambient = new THREE.AmbientLight(0xC6A15B, 0.5);
-  scene.add(ambient);
-  const point = new THREE.PointLight(0xEBE4D3, 1, 50);
-  point.position.set(4,4,6);
+  scene.add(new THREE.AmbientLight(0xC6A15B, 0.35));
+  const point = new THREE.PointLight(0xEBE4D3, 1.1, 60);
+  point.position.set(4, 4, 6);
   scene.add(point);
+  const point2 = new THREE.PointLight(0x6B7FB0, 0.6, 60);
+  point2.position.set(-5, -3, -4);
+  scene.add(point2);
 
+  /* ---- starfield ---- */
+  const starGeo = new THREE.BufferGeometry();
+  const starCount = 420;
+  const starPos = new Float32Array(starCount * 3);
+  for(let i=0;i<starCount;i++){
+    const r = 9 + Math.random()*16;
+    const theta = Math.random()*Math.PI*2;
+    const phi = Math.acos((Math.random()*2)-1);
+    starPos[i*3] = r * Math.sin(phi) * Math.cos(theta);
+    starPos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+    starPos[i*3+2] = r * Math.cos(phi) - 6;
+  }
+  starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+  const starMat = new THREE.PointsMaterial({color:0xEBE4D3, size:0.045, transparent:true, opacity:0.55, sizeAttenuation:true});
+  const stars = new THREE.Points(starGeo, starMat);
+  scene.add(stars);
+
+  /* ---- glow sprite texture (canvas-generated, no external assets) ---- */
+  function makeGlowTexture(){
+    const size = 128;
+    const c = document.createElement('canvas');
+    c.width = c.height = size;
+    const ctx = c.getContext('2d');
+    const g = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
+    g.addColorStop(0, 'rgba(255,244,214,1)');
+    g.addColorStop(0.35, 'rgba(198,161,91,0.85)');
+    g.addColorStop(1, 'rgba(198,161,91,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, size, size);
+    return new THREE.CanvasTexture(c);
+  }
+  const glowTex = makeGlowTexture();
+
+  /* ---- core group (rotated by drag) ---- */
   const group = new THREE.Group();
   scene.add(group);
 
-  const icoGeo = new THREE.IcosahedronGeometry(1.5, 1);
-  const icoMat = new THREE.MeshBasicMaterial({color:0xC6A15B, wireframe:true, transparent:true, opacity:0.85});
-  const ico = new THREE.Mesh(icoGeo, icoMat);
-  group.add(ico);
+  const bodyGeo = new THREE.IcosahedronGeometry(1.4, 1);
+  const bodyMat = new THREE.MeshBasicMaterial({color:0x1E2C46, transparent:true, opacity:0.5});
+  group.add(new THREE.Mesh(bodyGeo, bodyMat));
 
-  const ringGeo = new THREE.TorusGeometry(2.3, 0.01, 8, 64);
-  const ringMat = new THREE.MeshBasicMaterial({color:0x8C7444, transparent:true, opacity:0.6});
-  const ring = new THREE.Mesh(ringGeo, ringMat);
-  ring.rotation.x = Math.PI/2.3;
-  scene.add(ring);
+  const wireGeo = new THREE.IcosahedronGeometry(1.4, 1);
+  const wireMat = new THREE.MeshBasicMaterial({color:0xC6A15B, wireframe:true, transparent:true, opacity:0.9});
+  const wire = new THREE.Mesh(wireGeo, wireMat);
+  group.add(wire);
 
+  // fresnel rim-glow shell (core three.js shaders, no addons needed)
+  const glowGeo = new THREE.IcosahedronGeometry(1.48, 2);
+  const glowMat = new THREE.ShaderMaterial({
+    uniforms: { glowColor: {value: new THREE.Color(0xC6A15B)} },
+    vertexShader: `
+      varying vec3 vNormal;
+      varying vec3 vViewPosition;
+      void main(){
+        vNormal = normalize(normalMatrix * normal);
+        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+        vViewPosition = -mvPosition.xyz;
+        gl_Position = projectionMatrix * mvPosition;
+      }
+    `,
+    fragmentShader: `
+      varying vec3 vNormal;
+      varying vec3 vViewPosition;
+      uniform vec3 glowColor;
+      void main(){
+        vec3 viewDir = normalize(vViewPosition);
+        float rim = 1.0 - max(dot(viewDir, vNormal), 0.0);
+        rim = pow(rim, 2.4);
+        gl_FragColor = vec4(glowColor, rim);
+      }
+    `,
+    transparent: true,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  });
+  const glowShell = new THREE.Mesh(glowGeo, glowMat);
+  group.add(glowShell);
+
+  /* ---- tilted orbit rings (orrery style) ---- */
+  const ringDefs = [
+    {radius:2.15, tilt: 1.32, speed:0.0016, color:0xC6A15B, opacity:0.55},
+    {radius:2.55, tilt: 0.55, speed:-0.001, color:0x8C7444, opacity:0.4},
+    {radius:2.95, tilt: 1.85, speed:0.0009, color:0x6B7FB0, opacity:0.3},
+  ];
+  const rings = ringDefs.map(def => {
+    const geo = new THREE.TorusGeometry(def.radius, 0.008, 8, 96);
+    const mat = new THREE.MeshBasicMaterial({color:def.color, transparent:true, opacity:def.opacity});
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.rotation.x = def.tilt;
+    mesh.userData.speed = def.speed;
+    scene.add(mesh);
+    return mesh;
+  });
+
+  /* ---- glowing device markers riding the rings, each with a comet trail ---- */
+  const markerLabels = [
+    'DVC-7F2A · Diagnostic Scanner',
+    'DVC-88CQ · Torque Wrench',
+    'DVC-3KXP · Battery Tester',
+    'DVC-9LZM · OBD Dongle',
+    'DVC-5RTS · Lift Controller',
+  ];
   const markers = [];
-  const markerGeo = new THREE.SphereGeometry(0.06, 12, 12);
-  const markerMat = new THREE.MeshBasicMaterial({color:0xEBE4D3});
-  for(let i=0;i<5;i++){
-    const m = new THREE.Mesh(markerGeo, markerMat.clone());
-    m.userData.angle = (i/5) * Math.PI * 2;
-    m.userData.radius = 2.3;
-    m.userData.speed = 0.004 + Math.random()*0.003;
-    scene.add(m);
-    markers.push(m);
-  }
+  const markerDefs = [
+    {ring:0, speed:0.0055}, {ring:0, speed:-0.004},
+    {ring:1, speed:0.0038}, {ring:2, speed:0.005}, {ring:2, speed:-0.0032},
+  ];
+  markerDefs.forEach((def, i) => {
+    const mat = new THREE.SpriteMaterial({map:glowTex, transparent:true, blending:THREE.AdditiveBlending, depthWrite:false});
+    const sprite = new THREE.Sprite(mat);
+    sprite.scale.set(0.32, 0.32, 1);
+    sprite.userData.angle = (i / markerDefs.length) * Math.PI * 2;
+    sprite.userData.speed = def.speed;
+    sprite.userData.ringDef = ringDefs[def.ring];
+    sprite.userData.label = markerLabels[i];
+    sprite.userData.trailHistory = [];
+    sprite.userData.trailSprites = [];
+    for(let t=0;t<4;t++){
+      const tMat = new THREE.SpriteMaterial({map:glowTex, transparent:true, blending:THREE.AdditiveBlending, depthWrite:false, opacity:0});
+      const tSprite = new THREE.Sprite(tMat);
+      tSprite.scale.set(0.2 - t*0.02, 0.2 - t*0.02, 1);
+      scene.add(tSprite);
+      sprite.userData.trailSprites.push(tSprite);
+    }
+    scene.add(sprite);
+    markers.push(sprite);
+  });
 
   function resize(){
     const w = stage.clientWidth, h = stage.clientHeight;
     renderer.setSize(w, h, false);
-    camera.aspect = w/h;
+    camera.aspect = w / h;
     camera.updateProjectionMatrix();
   }
   resize();
   window.addEventListener('resize', resize);
 
+  /* ---- drag-to-rotate ---- */
+  let dragging = false;
+  let lastX = 0, lastY = 0;
+  let velX = 0, velY = 0;
+  let resetting = false;
+
+  function pointerDown(x, y){
+    dragging = true;
+    resetting = false;
+    lastX = x; lastY = y;
+    velX = 0; velY = 0;
+    stage.classList.add('dragging');
+  }
+  function pointerMove(x, y){
+    if(!dragging) return;
+    const dx = x - lastX, dy = y - lastY;
+    lastX = x; lastY = y;
+    velY = dx * 0.006;
+    velX = dy * 0.006;
+    group.rotation.y += velY;
+    group.rotation.x += velX;
+    group.rotation.x = Math.max(-1.1, Math.min(1.1, group.rotation.x));
+  }
+  function pointerUp(){
+    if(!dragging) return;
+    dragging = false;
+    stage.classList.remove('dragging');
+  }
+
+  stage.addEventListener('mousedown', (e)=> pointerDown(e.clientX, e.clientY));
+  window.addEventListener('mousemove', (e)=>{
+    pointerMove(e.clientX, e.clientY);
+    const r = stage.getBoundingClientRect();
+    mouseNX = ((e.clientX - r.left) / r.width) * 2 - 1;
+    mouseNY = ((e.clientY - r.top) / r.height) * 2 - 1;
+    overStage = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+    lastClientX = e.clientX - r.left;
+    lastClientY = e.clientY - r.top;
+  });
+  window.addEventListener('mouseup', pointerUp);
+
+  stage.addEventListener('touchstart', (e)=>{
+    const t = e.touches[0];
+    pointerDown(t.clientX, t.clientY);
+  }, {passive:true});
+  stage.addEventListener('touchmove', (e)=>{
+    const t = e.touches[0];
+    pointerMove(t.clientX, t.clientY);
+  }, {passive:true});
+  stage.addEventListener('touchend', pointerUp);
+
+  /* ---- scroll to zoom ---- */
+  let zoomOffset = 0;
+  stage.addEventListener('wheel', (e)=>{
+    e.preventDefault();
+    zoomOffset += e.deltaY * 0.0018;
+    zoomOffset = Math.max(-1.6, Math.min(2.4, zoomOffset));
+  }, {passive:false});
+
+  /* ---- double-click to reset ---- */
+  stage.addEventListener('dblclick', ()=>{
+    resetting = true;
+    velX = 0; velY = 0;
+  });
+  window.resetHero = () => { resetting = true; velX = 0; velY = 0; };
+
+  /* ---- gentle camera parallax toward the cursor ---- */
+  let mouseNX = 0, mouseNY = 0, overStage = false;
+  let camX = 0, camY = 0;
+  let lastClientX = 0, lastClientY = 0;
+
+  /* ---- hover tooltip via raycasting ---- */
+  const raycaster = new THREE.Raycaster();
+  const tooltip = document.getElementById('hero-tooltip');
+
+  /* ---- HUD telemetry readout ---- */
+  const hudLeft = document.getElementById('hud-rot');
+  const hudRight = document.getElementById('hud-vel');
+  let frame = 0;
+  let clock = 0;
+
   function animate(){
     requestAnimationFrame(animate);
-    group.rotation.y += 0.0032;
-    group.rotation.x += 0.0009;
-    ring.rotation.z += 0.0015;
+    clock += 0.016;
+    frame++;
+
+    if(resetting){
+      group.rotation.x += (0 - group.rotation.x) * 0.08;
+      group.rotation.y += (0 - group.rotation.y) * 0.05;
+      zoomOffset += (0 - zoomOffset) * 0.08;
+      if(Math.abs(group.rotation.x) < 0.005 && Math.abs(zoomOffset) < 0.01) resetting = false;
+    } else if(dragging){
+      // manual control already applied in pointerMove
+    } else {
+      group.rotation.y += 0.0032 + velY;
+      group.rotation.x += 0.0009 + velX;
+      velY *= 0.94; velX *= 0.94;
+      if(Math.abs(velY) < 0.0001) velY = 0;
+      if(Math.abs(velX) < 0.0001) velX = 0;
+    }
+
+    const pulse = 1 + Math.sin(clock * 1.1) * 0.025;
+    group.scale.set(pulse, pulse, pulse);
+    wire.rotation.y -= 0.0011;
+
+    rings.forEach(r => r.rotation.z += r.userData.speed);
     markers.forEach(m=>{
       m.userData.angle += m.userData.speed;
-      m.position.x = Math.cos(m.userData.angle) * m.userData.radius;
-      m.position.z = Math.sin(m.userData.angle) * m.userData.radius * 0.4;
-      m.position.y = Math.sin(m.userData.angle*1.3) * 0.6;
+      const rd = m.userData.ringDef;
+      const localX = Math.cos(m.userData.angle) * rd.radius;
+      const localY = Math.sin(m.userData.angle) * rd.radius;
+      const v = new THREE.Vector3(localX, localY, 0);
+      v.applyEuler(new THREE.Euler(rd.tilt, 0, 0));
+      m.position.copy(v);
+
+      m.userData.trailHistory.unshift(v.clone());
+      if(m.userData.trailHistory.length > 5) m.userData.trailHistory.pop();
+      m.userData.trailSprites.forEach((ts, idx)=>{
+        const p = m.userData.trailHistory[idx+1];
+        if(p){ ts.position.copy(p); ts.material.opacity = 0.32 * (1 - idx/4); }
+        else { ts.material.opacity = 0; }
+      });
     });
+
+    stars.rotation.y += 0.0002;
+
+    const targetX = overStage && !dragging ? mouseNX * 0.5 : 0;
+    const targetY = overStage && !dragging ? -mouseNY * 0.3 : 0;
+    camX += (targetX - camX) * 0.04;
+    camY += (targetY - camY) * 0.04;
+    camera.position.x = camX;
+    camera.position.y = camY;
+    camera.position.z = 6.4 + zoomOffset;
+    camera.lookAt(0, 0, 0);
+
+    if(overStage && !dragging){
+      raycaster.setFromCamera({x: mouseNX, y: -mouseNY}, camera);
+      const hits = raycaster.intersectObjects(markers);
+      if(hits.length){
+        tooltip.textContent = hits[0].object.userData.label;
+        tooltip.style.transform = `translate(${lastClientX + 14}px, ${lastClientY - 10}px)`;
+        tooltip.classList.add('show');
+      } else {
+        tooltip.classList.remove('show');
+      }
+    } else {
+      tooltip.classList.remove('show');
+    }
+
+    if(frame % 6 === 0 && hudLeft && hudRight){
+      const deg = ((group.rotation.y * 180 / Math.PI) % 360 + 360) % 360;
+      hudLeft.textContent = `AXIS·Y ${deg.toFixed(1)}°`;
+      const speed = Math.abs(velY) + Math.abs(velX);
+      hudRight.textContent = resetting ? 'RECENTERING' : dragging ? 'MANUAL CONTROL' : (speed > 0.0005 ? 'DECELERATING' : 'DRAG TO ROTATE');
+    }
+
     renderer.render(scene, camera);
   }
   animate();
@@ -425,6 +952,83 @@ document.querySelectorAll('.tilt-card').forEach(el => attachTilt(el, el.classLis
 
 function scrollToTop(){ window.scrollTo({top:0, behavior:'smooth'}); }
 function goTo(id){ document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); }
+
+function toggleMobileMenu(){
+  document.getElementById('mobile-nav').classList.toggle('open');
+}
+
+/* ---- scroll-reveal animations ---- */
+const revealObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, {threshold:0.15});
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* ---- keyboard accessibility for span-based nav links ---- */
+document.querySelectorAll('.nav-link').forEach(el => {
+  el.setAttribute('tabindex', '0');
+  el.setAttribute('role', 'button');
+  el.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); el.click(); }
+  });
+});
+
+/* ========================= PAGE ROUTER (marketing site) ========================= */
+function showPage(name){
+  document.querySelectorAll('#screen-landing .page').forEach(p => p.classList.add('hidden'));
+  const el = document.getElementById('page-' + name);
+  if(el){
+    el.classList.remove('hidden');
+    el.classList.remove('page-anim');
+    void el.offsetWidth;
+    el.classList.add('page-anim');
+  }
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+async function landingMechanicLookup(e){
+  e.preventDefault();
+  const id = document.getElementById('page-mech-id').value.trim().toUpperCase();
+  const pw = document.getElementById('page-mech-pw').value;
+  const resultBox = document.getElementById('page-mech-result');
+  resultBox.innerHTML = '';
+  const data = await loadData();
+  let found = null;
+  for(const u of Object.values(data.users)){
+    const d = (u.devices||[]).find(d=>d.id===id && d.password===pw);
+    if(d){ found = d; break; }
+  }
+  setTimeout(()=>{
+    if(found){
+      resultBox.innerHTML = `
+        <div style="margin-top:22px; background:var(--panel-alt); border:1px solid var(--border); padding:16px;">
+          <div style="font-family:var(--serif); font-size:15px; margin-bottom:8px;">${escapeHtml(found.name)}</div>
+          <div style="font-size:12px; color:var(--ink-faint); line-height:1.8;">
+            Type: ${escapeHtml(found.type)}<br>
+            Status: ${found.status==='lost'?'Lost':'Active'}<br>
+            Last location: ${found.location ? escapeHtml(found.location) : 'Not pinged yet'}
+          </div>
+        </div>`;
+    } else {
+      notify('No device matches that ID and password.', 'error');
+    }
+  }, 400);
+  return false;
+}
+
+function submitContact(e){
+  e.preventDefault();
+  const name = document.getElementById('contact-name').value.trim();
+  document.getElementById('contact-name').value = '';
+  document.getElementById('contact-email').value = '';
+  document.getElementById('contact-msg').value = '';
+  notify(name ? `Thanks, ${name} — we'll be in touch.` : 'Message sent — we\u2019ll be in touch.');
+  return false;
+}
 
 /* ========================= AUTH MODAL ========================= */
 let authMode = 'login';
@@ -488,6 +1092,7 @@ function enterApp(){
   document.getElementById('side-uemail').textContent = currentUser.email;
   currentTab = 'dashboard';
   setTab('dashboard');
+  updateNotifBadge();
 }
 function exitApp(){
   document.getElementById('app-shell').classList.add('hidden');
@@ -507,12 +1112,17 @@ async function persistUser(updated){
   data.users[updated.email] = updated;
   await saveData(data);
   currentUser = updated;
+  updateNotifBadge();
 }
 
 function setTab(tab){
   currentTab = tab;
   document.querySelectorAll('.side-nav button').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
   renderMain();
+  const main = document.getElementById('main-content');
+  main.classList.remove('main-fade');
+  void main.offsetWidth;
+  main.classList.add('main-fade');
 }
 
 function renderMain(){
@@ -521,6 +1131,10 @@ function renderMain(){
   const lostCount = devices.filter(d=>d.status==='lost').length;
 
   if(currentTab === 'dashboard'){
+    const activity = devices
+      .flatMap(d => (d.history||[]).map(h => ({...h, deviceName:d.name})))
+      .sort((a,b) => b.ts - a.ts)
+      .slice(0, 6);
     main.innerHTML = `
       <h1>Welcome, ${currentUser.name.split(' ')[0]}</h1>
       <p class="lead">Here is the current state of your registry.</p>
@@ -529,7 +1143,21 @@ function renderMain(){
         <div class="stat"><div class="v">${lostCount}</div><div class="l">CURRENTLY LOST</div></div>
         <div class="stat"><div class="v">${currentUser.membership ? 'Active' : 'Free'}</div><div class="l">MEMBERSHIP</div></div>
       </div>
-      <button class="btn btn-ghost" onclick="setTab('devices')">View your devices →</button>
+      <button class="btn btn-ghost" style="margin-bottom:32px;" onclick="setTab('devices')">View your devices →</button>
+      <div style="max-width:520px;">
+        <h2 style="font-family:var(--serif); font-size:17px; color:var(--ink); margin-bottom:14px;">Recent activity</h2>
+        ${activity.length === 0
+          ? `<div class="empty-box" style="max-width:none;">Nothing logged yet — add a device to get started.</div>`
+          : `<div class="activity-list">${activity.map(a => `
+              <div class="activity-row">
+                <span class="activity-dot"></span>
+                <div>
+                  <div class="activity-text">${escapeHtml(a.deviceName)} — ${escapeHtml(a.action)}</div>
+                  <div class="activity-time">${timeAgo(a.ts)}</div>
+                </div>
+              </div>`).join('')}</div>`
+        }
+      </div>
     `;
   }
 
@@ -537,17 +1165,24 @@ function renderMain(){
     main.innerHTML = `
       <div class="devices-head">
         <div><h1>My devices</h1><p class="lead" style="margin-bottom:0;">Each entry carries its own ID and password.</p></div>
-        <button class="btn btn-gold" onclick="openAddDevice()">+ Add device</button>
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-ghost" onclick="exportRegistry()">⬇ Export</button>
+          <button class="btn btn-gold" onclick="openAddDevice()">+ Add device</button>
+        </div>
       </div>
-      ${devices.length === 0
-        ? `<div class="empty-box">No devices yet. Add your first one to start tracking.</div>`
-        : `<div class="device-grid">${devices.map((d,i)=>deviceCardHtml(d,i)).join('')}</div>`
-      }
+      ${!currentUser.membership ? `<div class="plan-hint">Free plan: ${devices.length}/2 devices used — <span class="nav-link" onclick="setTab('membership')">upgrade for unlimited →</span></div>` : ''}
+      ${devices.length > 0 ? `
+      <div class="devices-toolbar">
+        <input id="device-search" placeholder="Search by name or type…" value="${escapeHtml(deviceSearchQuery)}" oninput="deviceSearchQuery=this.value; renderDeviceGrid();">
+        <select id="device-filter" onchange="deviceStatusFilter=this.value; renderDeviceGrid();">
+          <option value="all" ${deviceStatusFilter==='all'?'selected':''}>All statuses</option>
+          <option value="active" ${deviceStatusFilter==='active'?'selected':''}>Active only</option>
+          <option value="lost" ${deviceStatusFilter==='lost'?'selected':''}>Lost only</option>
+        </select>
+      </div>` : ''}
+      <div id="device-grid-wrap"></div>
     `;
-    devices.forEach(d=>{
-      const card = document.getElementById('card-'+d.id);
-      if(card) attachTilt(card, 5);
-    });
+    renderDeviceGrid();
   }
 
   else if(currentTab === 'membership'){
@@ -604,19 +1239,20 @@ function renderMain(){
 function deviceCardHtml(d, i){
   const lost = d.status === 'lost';
   return `
-    <div class="device-card ${lost?'lost':''} tilt-card" id="card-${d.id}">
+    <div class="device-card ${lost?'lost':''} tilt-card" id="card-${d.id}" onclick="if(!event.target.closest('button')) openDeviceDetail('${d.id}')">
       <div class="dc-top">
         <div style="display:flex;"><span class="dc-idx">${String(i+1).padStart(2,'0')}</span>
           <div><div class="dc-name">${escapeHtml(d.name)}</div><div class="dc-type">${escapeHtml(d.type)}</div></div>
         </div>
         <span class="status-pill ${lost?'status-lost':'status-active'}">${lost?'Lost':'Active'}</span>
       </div>
-      <div class="id-row" onclick="copyId('${d.id}')"><span>${d.id}</span><span>⧉</span></div>
+      <div class="id-row" onclick="event.stopPropagation(); copyId('${d.id}')"><span>${d.id}</span><span>⧉</span></div>
       <div class="loc-row">📍 ${d.location ? escapeHtml(d.location) : 'No location pinged yet'}</div>
       <div class="lock-row">🔒 Separate device password set</div>
       <div class="dc-actions">
         <button class="find-btn" id="find-${d.id}" onclick="findDevice('${d.id}')" ${findingId===d.id?'disabled':''}>${findingId===d.id?'Locating...':'Find device'}</button>
-        <button class="del-btn" onclick="deleteDevice('${d.id}')">🗑</button>
+        <button class="del-btn" onclick="event.stopPropagation(); openEditDevice('${d.id}')" title="Edit">✎</button>
+        <button class="del-btn" onclick="event.stopPropagation(); deleteDevice('${d.id}')" title="Delete">🗑</button>
       </div>
       ${findingId===d.id ? '<div class="radar"><div class="radar-ring"></div></div>' : ''}
     </div>
@@ -625,6 +1261,103 @@ function deviceCardHtml(d, i){
 
 function escapeHtml(s){
   const d = document.createElement('div'); d.textContent = s; return d.innerHTML;
+}
+
+function renderDeviceGrid(){
+  const wrap = document.getElementById('device-grid-wrap');
+  if(!wrap) return;
+  const all = currentUser.devices || [];
+  const q = deviceSearchQuery.trim().toLowerCase();
+  const filtered = all.filter(d => {
+    const matchesQuery = !q || d.name.toLowerCase().includes(q) || d.type.toLowerCase().includes(q);
+    const matchesStatus = deviceStatusFilter === 'all' || d.status === deviceStatusFilter;
+    return matchesQuery && matchesStatus;
+  });
+
+  if(all.length === 0){
+    wrap.innerHTML = `<div class="empty-box">No devices yet. Add your first one to start tracking.</div>`;
+    return;
+  }
+  if(filtered.length === 0){
+    wrap.innerHTML = `<div class="empty-box">No devices match that search.</div>`;
+    return;
+  }
+  wrap.innerHTML = `<div class="device-grid">${filtered.map((d) => deviceCardHtml(d, all.indexOf(d))).join('')}</div>`;
+  filtered.forEach(d=>{
+    const card = document.getElementById('card-'+d.id);
+    if(card) attachTilt(card, 5);
+  });
+}
+
+function timeAgo(ts){
+  const s = Math.max(1, Math.floor((Date.now() - ts) / 1000));
+  if(s < 60) return `${s}s ago`;
+  const m = Math.floor(s/60);
+  if(m < 60) return `${m}m ago`;
+  const h = Math.floor(m/60);
+  if(h < 24) return `${h}h ago`;
+  return `${Math.floor(h/24)}d ago`;
+}
+
+function openDeviceDetail(id){
+  const d = currentUser.devices.find(dv => dv.id === id);
+  if(!d) return;
+  const history = (d.history || []).slice().sort((a,b)=>b.ts-a.ts);
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay';
+  overlay.id = 'device-detail-overlay';
+  overlay.innerHTML = `
+    <div class="modal">
+      <button class="close" onclick="document.getElementById('device-detail-overlay').remove()">✕</button>
+      <h2>${escapeHtml(d.name)}</h2>
+      <p class="sub-t">${escapeHtml(d.type)}</p>
+      <div style="background:var(--panel-alt); border:1px solid var(--border); padding:10px 12px; font-family:monospace; font-size:12px; color:var(--ink-dim); margin-bottom:18px; display:flex; justify-content:space-between;">
+        <span>${d.id}</span><span>${d.status === 'lost' ? 'Lost' : 'Active'}</span>
+      </div>
+      <div style="font-size:13px; color:var(--ink-faint); margin-bottom:6px;">📍 ${d.location ? escapeHtml(d.location) : 'No location pinged yet'}</div>
+      <div style="font-family:var(--serif); font-size:14px; color:var(--ink); margin:20px 0 10px;">Activity</div>
+      <div class="activity-list" style="max-height:220px; overflow-y:auto;">
+        ${history.length === 0
+          ? `<div style="font-size:13px; color:var(--ink-faint);">No activity logged yet.</div>`
+          : history.map(h => `
+            <div class="activity-row">
+              <span class="activity-dot"></span>
+              <div><div class="activity-text">${escapeHtml(h.action)}</div><div class="activity-time">${timeAgo(h.ts)}</div></div>
+            </div>`).join('')
+        }
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+function exportRegistry(){
+  const devices = currentUser.devices || [];
+  if(devices.length === 0){ notify('No devices to export yet.', 'error'); return; }
+  const lines = [
+    `LIFEPASS EQUIPMENT REGISTRY`,
+    `Shop: ${currentUser.name} <${currentUser.email}>`,
+    `Exported: ${new Date().toLocaleString()}`,
+    ``,
+    ...devices.map((d,i) => [
+      `${String(i+1).padStart(2,'0')}. ${d.name}`,
+      `    Type: ${d.type}`,
+      `    ID: ${d.id}`,
+      `    Status: ${d.status === 'lost' ? 'Lost' : 'Active'}`,
+      `    Last location: ${d.location || 'Not pinged yet'}`,
+      ``,
+    ].join('\n')),
+  ];
+  const blob = new Blob([lines.join('\n')], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'lifepass-registry.txt';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  notify('Registry exported.');
 }
 
 function copyId(id){
@@ -664,7 +1397,11 @@ async function submitAddDevice(e, genId){
   const type = document.getElementById('ad-type').value;
   const password = document.getElementById('ad-pw').value;
   if(!name || !password) return false;
-  const device = {id:genId, name, type, password, status:'active', location:''};
+  if(!currentUser.membership && (currentUser.devices||[]).length >= 2){
+    notify('Free plan is capped at 2 devices — upgrade for unlimited.', 'error');
+    return false;
+  }
+  const device = {id:genId, name, type, password, status:'active', location:'', history:[{ts:Date.now(), action:'Registered'}]};
   const updated = {...currentUser, devices:[...(currentUser.devices||[]), device]};
   await persistUser(updated);
   document.getElementById('add-device-overlay').remove();
@@ -673,6 +1410,110 @@ async function submitAddDevice(e, genId){
   return false;
 }
 
+function updateNotifBadge(){
+  const badge = document.getElementById('notif-badge');
+  if(!badge || !currentUser) return;
+  const lost = (currentUser.devices||[]).filter(d=>d.status==='lost').length;
+  badge.textContent = lost;
+  badge.classList.toggle('hidden', lost === 0);
+}
+
+function toggleNotifications(e){
+  e.stopPropagation();
+  const panel = document.getElementById('notif-panel');
+  const opening = panel.classList.contains('hidden');
+  if(!opening){ panel.classList.add('hidden'); return; }
+  const lost = (currentUser.devices||[]).filter(d=>d.status==='lost');
+  panel.innerHTML = `
+    <div class="notif-head">Lost devices</div>
+    ${lost.length === 0
+      ? `<div class="notif-empty">All devices accounted for.</div>`
+      : lost.map(d => `<div class="notif-item" onclick="setTab('devices'); document.getElementById('notif-panel').classList.add('hidden');"><span>${escapeHtml(d.name)}</span><span style="color:var(--rust);">Lost</span></div>`).join('')
+    }
+  `;
+  panel.classList.remove('hidden');
+}
+document.addEventListener('click', (e)=>{
+  const panel = document.getElementById('notif-panel');
+  if(panel && !panel.classList.contains('hidden') && !e.target.closest('.notif-panel') && !e.target.closest('.bell-btn')){
+    panel.classList.add('hidden');
+  }
+});
+
+/* ---- Edit device modal ---- */
+function openEditDevice(id){
+  const d = currentUser.devices.find(dv => dv.id === id);
+  if(!d) return;
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay';
+  overlay.id = 'edit-device-overlay';
+  overlay.innerHTML = `
+    <div class="modal">
+      <button class="close" onclick="document.getElementById('edit-device-overlay').remove()">✕</button>
+      <h2>Edit device</h2>
+      <p class="sub-t">&nbsp;</p>
+      <form onsubmit="return submitEditDevice(event, '${id}')">
+        <div class="field"><label>DEVICE NAME</label><input id="ed-name" value="${escapeHtml(d.name)}"></div>
+        <div class="field"><label>TYPE</label>
+          <select id="ed-type">${DEVICE_TYPES.map(t=>`<option ${t===d.type?'selected':''}>${t}</option>`).join('')}</select>
+        </div>
+        <div class="field"><label>DEVICE ID</label>
+          <div style="font-family:monospace; color:var(--gold); background:var(--panel-alt); border:1px solid var(--border); padding:10px 12px;">${d.id}</div>
+        </div>
+        <div class="field"><label>DEVICE PASSWORD</label><input id="ed-pw" value="${escapeHtml(d.password)}"></div>
+        <button class="btn btn-gold submit-btn" type="submit">Save changes</button>
+      </form>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+async function submitEditDevice(e, id){
+  e.preventDefault();
+  const name = document.getElementById('ed-name').value.trim();
+  const type = document.getElementById('ed-type').value;
+  const password = document.getElementById('ed-pw').value;
+  if(!name || !password) return false;
+  const updated = {...currentUser, devices: currentUser.devices.map(d => d.id===id
+    ? {...d, name, type, password, history:[...(d.history||[]), {ts:Date.now(), action:'Details edited'}]}
+    : d)};
+  await persistUser(updated);
+  document.getElementById('edit-device-overlay').remove();
+  notify('Device updated.');
+  renderMain();
+  return false;
+}
+
+/* ---- Account settings modal ---- */
+function openAccountSettings(){
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay';
+  overlay.id = 'account-overlay';
+  overlay.innerHTML = `
+    <div class="modal">
+      <button class="close" onclick="document.getElementById('account-overlay').remove()">✕</button>
+      <h2>Account settings</h2>
+      <p class="sub-t">${escapeHtml(currentUser.email)}</p>
+      <form onsubmit="return submitAccountSettings(event)">
+        <div class="field"><label>FULL NAME</label><input id="acc-name" value="${escapeHtml(currentUser.name)}"></div>
+        <div class="field"><label>PASSWORD</label><input id="acc-pw" type="text" value="${escapeHtml(currentUser.password)}"></div>
+        <button class="btn btn-gold submit-btn" type="submit">Save changes</button>
+      </form>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+async function submitAccountSettings(e){
+  e.preventDefault();
+  const name = document.getElementById('acc-name').value.trim();
+  const password = document.getElementById('acc-pw').value;
+  if(!name || !password) return false;
+  await persistUser({...currentUser, name, password});
+  document.getElementById('side-uname').textContent = name;
+  document.getElementById('account-overlay').remove();
+  notify('Account updated.');
+  renderMain();
+  return false;
+}
 async function deleteDevice(id){
   const updated = {...currentUser, devices: currentUser.devices.filter(d=>d.id!==id)};
   await persistUser(updated);
@@ -686,7 +1527,9 @@ function findDevice(id){
   setTimeout(async ()=>{
     const spots = ["Bay 2, main garage","Front lot, van 3","Tool crib, shelf B","Customer vehicle — lift 1","Parts room"];
     const spot = spots[Math.floor(Math.random()*spots.length)];
-    const updated = {...currentUser, devices: currentUser.devices.map(d=> d.id===id ? {...d, status:'active', location:spot} : d)};
+    const updated = {...currentUser, devices: currentUser.devices.map(d=> d.id===id
+      ? {...d, status:'active', location:spot, history:[...(d.history||[]), {ts:Date.now(), action:`Located — ${spot}`}]}
+      : d)};
     await persistUser(updated);
     findingId = null;
     notify(`Found near: ${spot}.`);
@@ -729,6 +1572,117 @@ async function mechanicLookup(e){
   }, 400);
   return false;
 }
+
+/* ========================= COMMAND PALETTE ========================= */
+let cmdkActiveIndex = 0;
+let cmdkItems = [];
+
+function getCmdkCommands(){
+  const inApp = !document.getElementById('app-shell').classList.contains('hidden');
+  const cmds = [];
+  if(inApp){
+    cmds.push(
+      {label:'Go to Dashboard', tag:'Tab', action:()=>setTab('dashboard')},
+      {label:'Go to My devices', tag:'Tab', action:()=>setTab('devices')},
+      {label:'Go to Membership', tag:'Tab', action:()=>setTab('membership')},
+      {label:'Go to Mechanic access', tag:'Tab', action:()=>setTab('mechanic')},
+      {label:'Add a device', tag:'Action', action:()=>{ setTab('devices'); openAddDevice(); }},
+      {label:'Export registry', tag:'Action', action:()=>exportRegistry()},
+      {label:'Account settings', tag:'Action', action:()=>openAccountSettings()},
+      {label:'Log out', tag:'Action', action:()=>logout()},
+    );
+    (currentUser?.devices||[]).forEach(d=>{
+      cmds.push({label:`${d.name} — ${d.id}`, tag:d.status==='lost'?'Lost device':'Device', action:()=>{ setTab('devices'); setTimeout(()=>openDeviceDetail(d.id), 50); }});
+    });
+  } else {
+    cmds.push(
+      {label:'Home', tag:'Page', action:()=>showPage('home')},
+      {label:'Features', tag:'Page', action:()=>showPage('features')},
+      {label:'Pricing', tag:'Page', action:()=>showPage('pricing')},
+      {label:'Mechanic Access', tag:'Page', action:()=>showPage('mechanic')},
+      {label:'About', tag:'Page', action:()=>showPage('about')},
+      {label:'Contact', tag:'Page', action:()=>showPage('contact')},
+      {label:'Sign in', tag:'Action', action:()=>openAuth('login')},
+      {label:'Open a registry', tag:'Action', action:()=>openAuth('signup')},
+    );
+  }
+  return cmds;
+}
+
+function openCmdk(){
+  document.getElementById('cmdk-overlay').classList.remove('hidden');
+  const input = document.getElementById('cmdk-input');
+  input.value = '';
+  input.focus();
+  cmdkActiveIndex = 0;
+  renderCmdkResults();
+}
+function closeCmdk(){
+  document.getElementById('cmdk-overlay').classList.add('hidden');
+}
+function renderCmdkResults(){
+  const q = document.getElementById('cmdk-input').value.trim().toLowerCase();
+  const all = getCmdkCommands();
+  cmdkItems = q ? all.filter(c => c.label.toLowerCase().includes(q)) : all;
+  cmdkActiveIndex = 0;
+  const box = document.getElementById('cmdk-results');
+  if(cmdkItems.length === 0){
+    box.innerHTML = `<div class="cmdk-empty">No matches.</div>`;
+    return;
+  }
+  box.innerHTML = cmdkItems.map((c,i) => `
+    <div class="cmdk-item ${i===0?'active':''}" data-idx="${i}" onclick="runCmdk(${i})">
+      <span>${escapeHtml(c.label)}</span><span class="tag">${escapeHtml(c.tag)}</span>
+    </div>
+  `).join('');
+}
+function runCmdk(i){
+  const cmd = cmdkItems[i];
+  if(!cmd) return;
+  closeCmdk();
+  cmd.action();
+}
+function cmdkKeydown(e){
+  if(e.key === 'ArrowDown'){
+    e.preventDefault();
+    cmdkActiveIndex = Math.min(cmdkActiveIndex + 1, cmdkItems.length - 1);
+    highlightCmdk();
+  } else if(e.key === 'ArrowUp'){
+    e.preventDefault();
+    cmdkActiveIndex = Math.max(cmdkActiveIndex - 1, 0);
+    highlightCmdk();
+  } else if(e.key === 'Enter'){
+    e.preventDefault();
+    runCmdk(cmdkActiveIndex);
+  } else if(e.key === 'Escape'){
+    closeCmdk();
+  }
+}
+function highlightCmdk(){
+  document.querySelectorAll('.cmdk-item').forEach((el,i) => el.classList.toggle('active', i===cmdkActiveIndex));
+}
+
+/* ========================= KEYBOARD SHORTCUTS ========================= */
+document.addEventListener('keydown', (e)=>{
+  const typing = ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName);
+  if((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k'){
+    e.preventDefault();
+    const overlay = document.getElementById('cmdk-overlay');
+    overlay.classList.contains('hidden') ? openCmdk() : closeCmdk();
+    return;
+  }
+  if(e.key === 'Escape' && !document.getElementById('cmdk-overlay').classList.contains('hidden')){
+    closeCmdk();
+    return;
+  }
+  if(e.key === 'r' && !typing && !document.getElementById('screen-landing').classList.contains('hidden')){
+    window.resetHero && window.resetHero();
+  }
+  if(e.key === '/' && !typing && !document.getElementById('app-shell').classList.contains('hidden') && currentTab === 'devices'){
+    e.preventDefault();
+    document.getElementById('device-search')?.focus();
+  }
+});
 
 /* ========================= BOOTSTRAP ========================= */
 (async function bootstrap(){
